@@ -3,24 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <!--CSS External-->
-    <link rel="stylesheet" href="css\style.css">
+    <title>To-Do List Web Application</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!--Header Content-->
-    <header>
-        <h1>To-Do List</h1>
-    </header>
+    <h1 class="main-title">Your To-Do List!</h1>
+    
+    <div class="main-card">
+        <div class="top-actions">
+            <select id="filter-status">
+                <option value="all">ALL STATUS</option>
+                <option value="Pending">PENDING</option>
+                <option value="Done">DONE</option>
+            </select>
+            <button id="delete-all-btn">DELETE ALL</button>
+        </div>
 
-    <!--Main Content-->
-    <main></main>
+        <div class="content-wrapper">
+            <div class="input-panel">
+                <h3>Add your To-Do List</h3>
+                <div class="input-box">
+                    <input type="text" id="todo-input" placeholder="Add a todo ...">
+                    <input type="date" id="date-input">
+                </div>
+                <button id="add-btn" class="circle-add">+</button>
+            </div>
 
-    <!--Footer Content-->
-    <footer></footer>
+            <div class="display-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TASK</th>
+                            <th>DUE DATE</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todo-table-body">
+                        </tbody>
+                </table>
+                <p id="empty-message">No task found</p>
+            </div>
+        </div>
+    </div>
 
-    <!--Header Content-->
-    <header></header>
+    <p class="footer-text">created by sna</p>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
