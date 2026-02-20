@@ -5,10 +5,15 @@ const tableBody = document.getElementById('todo-table-body');
 const emptyMessage = document.getElementById('empty-message');
 const filterStatus = document.getElementById('filter-status');
 const deleteAllBtn = document.getElementById('delete-all-btn');
+const confirmModal = document.getElementById('confirm-modal');
+const confirmYes = document.getElementById('confirm-yes');
+const confirmNo = document.getElementById('confirm-no');
+
+let pendingTask = null;
 
 let todos = [];
 
-// Fungsi Render List [Source: 30]
+// Fungsi Render List
 function renderTodos(data = todos) {
     tableBody.innerHTML = '';
     
@@ -34,41 +39,49 @@ function renderTodos(data = todos) {
     }
 }
 
-// Fitur Add + Validasi Konfirmasi [Source: 29, 31, 32]
+// Fitur Add + Validasi Konfirmasi
 addBtn.addEventListener('click', () => {
     const taskValue = todoInput.value.trim();
     const dateValue = dateInput.value;
 
-    // 1. Validasi jika kosong
     if (taskValue === "" || dateValue === "") {
         alert("Please fill in both the task and the date!");
         return;
     }
 
-    // 2. Validasi Konfirmasi (Yes/No) sesuai permintaanmu
-    const isConfirmed = confirm("Are you sure you want to add this todo list?");
+    // Simpan sementara data
+    pendingTask = {
+        task: taskValue,
+        date: dateValue,
+        status: 'Pending'
+    };
 
-    if (isConfirmed) {
-        const newTask = {
-            task: taskValue,
-            date: dateValue,
-            status: 'Pending'
-        };
+    // Tampilkan modal
+    confirmModal.style.display = "flex";
+});
 
-        todos.push(newTask);
-        
-        // Reset Input
+// Jika klik YES
+confirmYes.addEventListener('click', () => {
+    if (pendingTask) {
+        todos.push(pendingTask);
+        pendingTask = null;
+
         todoInput.value = '';
         dateInput.value = '';
         filterStatus.value = 'all';
         renderTodos();
-    } else {
-        // Jika pilih No (Cancel), tidak terjadi apa-apa
-        console.log("Add task cancelled by user.");
     }
+
+    confirmModal.style.display = "none";
 });
 
-// Fitur Filter Status [Source: 31]
+// Jika klik NO
+confirmNo.addEventListener('click', () => {
+    pendingTask = null;
+    confirmModal.style.display = "none";
+});
+
+// Fitur Filter Status
 filterStatus.addEventListener('change', (e) => {
     const selected = e.target.value;
     if (selected === "all") {
@@ -79,21 +92,17 @@ filterStatus.addEventListener('change', (e) => {
     }
 });
 
-// Fitur Delete Satu per Satu [Source: 31]
+// Fitur Delete Satu per Satu
 function deleteTask(index) {
-    if (confirm("Are you sure you want to delete this specific task?")) {
-        todos.splice(index, 1);
-        renderTodos();
-    }
+    todos.splice(index, 1);
+    renderTodos();
 }
 
-// Fitur Delete All [Source: 26, 31]
+// Fitur Delete All
 deleteAllBtn.addEventListener('click', () => {
     if (todos.length > 0) {
-        if (confirm("Are you sure you want to delete ALL tasks?")) {
-            todos = [];
-            renderTodos();
-        }
+        todos = [];
+        renderTodos();
     }
 });
 
