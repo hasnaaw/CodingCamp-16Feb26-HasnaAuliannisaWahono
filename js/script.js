@@ -1,4 +1,3 @@
-// Deklarasi Elemen
 const todoInput = document.getElementById('todo-input');
 const dateInput = document.getElementById('date-input');
 const addBtn = document.getElementById('add-btn');
@@ -9,7 +8,7 @@ const deleteAllBtn = document.getElementById('delete-all-btn');
 
 let todos = [];
 
-// Fungsi Render Tabel
+// Fungsi Render List [Source: 30]
 function renderTodos(data = todos) {
     tableBody.innerHTML = '';
     
@@ -18,9 +17,7 @@ function renderTodos(data = todos) {
     } else {
         emptyMessage.style.display = 'none';
         data.forEach((item) => {
-            // Mengambil index asli dari array 'todos' utama
             const originalIndex = todos.indexOf(item);
-            
             const row = `
                 <tr>
                     <td>${item.task}</td>
@@ -37,37 +34,43 @@ function renderTodos(data = todos) {
     }
 }
 
-// Fitur 1: Add To-Do & Validasi Input [Source: 29, 31, 32]
+// Fitur Add + Validasi Konfirmasi [Source: 29, 31, 32]
 addBtn.addEventListener('click', () => {
     const taskValue = todoInput.value.trim();
     const dateValue = dateInput.value;
 
+    // 1. Validasi jika kosong
     if (taskValue === "" || dateValue === "") {
-        alert("Harap isi Nama Tugas dan Tanggal!");
+        alert("Please fill in both the task and the date!");
         return;
     }
 
-    const newTask = {
-        task: taskValue,
-        date: dateValue,
-        status: 'Pending'
-    };
+    // 2. Validasi Konfirmasi (Yes/No) sesuai permintaanmu
+    const isConfirmed = confirm("Are you sure you want to add this todo list?");
 
-    todos.push(newTask);
-    
-    // Reset form
-    todoInput.value = '';
-    dateInput.value = '';
-    
-    // Reset filter ke 'all' saat menambah tugas baru
-    filterStatus.value = 'all';
-    renderTodos();
+    if (isConfirmed) {
+        const newTask = {
+            task: taskValue,
+            date: dateValue,
+            status: 'Pending'
+        };
+
+        todos.push(newTask);
+        
+        // Reset Input
+        todoInput.value = '';
+        dateInput.value = '';
+        filterStatus.value = 'all';
+        renderTodos();
+    } else {
+        // Jika pilih No (Cancel), tidak terjadi apa-apa
+        console.log("Add task cancelled by user.");
+    }
 });
 
-// Fitur 2: Filter berdasarkan Status [Source: 31]
+// Fitur Filter Status [Source: 31]
 filterStatus.addEventListener('change', (e) => {
     const selected = e.target.value;
-    
     if (selected === "all") {
         renderTodos(todos);
     } else {
@@ -76,22 +79,24 @@ filterStatus.addEventListener('change', (e) => {
     }
 });
 
-// Fitur 3: Delete & Delete All [Source: 31]
+// Fitur Delete Satu per Satu [Source: 31]
 function deleteTask(index) {
-    todos.splice(index, 1);
-    renderTodos();
+    if (confirm("Are you sure you want to delete this specific task?")) {
+        todos.splice(index, 1);
+        renderTodos();
+    }
 }
 
+// Fitur Delete All [Source: 26, 31]
 deleteAllBtn.addEventListener('click', () => {
     if (todos.length > 0) {
-        if (confirm("Hapus semua tugas?")) {
+        if (confirm("Are you sure you want to delete ALL tasks?")) {
             todos = [];
             renderTodos();
         }
     }
 });
 
-// Fitur Tambahan: Update Status
 function toggleStatus(index) {
     todos[index].status = todos[index].status === 'Pending' ? 'Done' : 'Pending';
     renderTodos();
